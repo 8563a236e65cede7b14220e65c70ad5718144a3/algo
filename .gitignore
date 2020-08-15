@@ -1,0 +1,9 @@
+*.pyc
+*.so
+.coverage
+.idea/
+.mypy_cache
+.tox
+docs/_build/
+htmlcov/
+MANIFEST
