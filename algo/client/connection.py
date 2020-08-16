@@ -6,13 +6,12 @@
     with the algo server.
 """
 import socket
-import subprocess
-from typing import Dict
+from typing import Dict, Union
 
 
 class Connection:
 
-    def __init__(self, host: str, port: int):
+    def __init__(self, host: str, port: int) -> None:
         self.host: str = host
         self.port: int = port
         self.check_valid()
@@ -26,9 +25,9 @@ class Connection:
             type errors here and raise. Also check if given host and port is a
             reachable, resolvable address.
         """
-        arg_types: Dict[str, type] = {"host": str, "port": int}
-        host_type_fine: bool = isinstance(self.host, arg_types.get("host"))
-        port_type_fine: bool = isinstance(self.port, arg_types.get("port"))
+        arg_types: Dict[str, Union[str, int]] = {"host": str(), "port": int()}
+        host_type_fine: bool = isinstance(self.host, type(arg_types.get("host")))
+        port_type_fine: bool = isinstance(self.port, type(arg_types.get("port")))
 
         # Check arguments of the correct type
         if not host_type_fine:
