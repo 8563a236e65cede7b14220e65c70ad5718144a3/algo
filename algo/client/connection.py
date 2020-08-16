@@ -51,6 +51,6 @@ class Connection:
         # Check if host and port are reachable
         sock: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         reachable: int = sock.connect_ex((self.host, self.port))
-        sock.close()
-        if not reachable:
+
+        if reachable:
             raise ValueError("Host and Port not reachable")
