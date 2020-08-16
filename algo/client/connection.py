@@ -13,6 +13,8 @@ class Connection:
     """
         Contains a variety of helper functions for communication
         over socket and error checking
+
+        .. automethod:: __init__
     """
     def __init__(self, host: str, port: int) -> None:
         self.host: str = host

@@ -11,6 +11,9 @@ algo.client.connection module
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
+   :private-members:
+   
 
 
 Module contents
@@ -20,3 +23,5 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
+   :inherited-members:
+   :private-members:
