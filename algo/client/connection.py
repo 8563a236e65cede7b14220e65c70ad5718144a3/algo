@@ -1,6 +1,6 @@
 """
-    A class representing a connection to the server
-    -----------------------------------------------
+    A class representing a connection to :mod:`algo.server`
+    -------------------------------------------------------
 
     Wraps the :mod:`socket` interface for low-level communication
     with the algo server.
@@ -10,7 +10,10 @@ from typing import Dict, Union
 
 
 class Connection:
-
+    """
+        Contains a variety of helper functions for communication
+        over socket and error checking
+    """
     def __init__(self, host: str, port: int) -> None:
         self.host: str = host
         self.port: int = port
@@ -18,11 +21,10 @@ class Connection:
 
     def check_valid(self) -> None:
         """
-            Check :meth:`algo.client.connection.Connection.__init__` arguments
-            ------------------------------------------------------------------
-
-            If MyPy or a linter has not been run on a user script, pick up
-            type errors here and raise. Also check if given host and port is a
+            If MyPy or a linter has not been run on a user script, pick up any
+            type errors or value errors
+            from :meth:`Connection.__init__`
+            and raise. Also check if given host and port is a
             reachable, resolvable address.
         """
         arg_types: Dict[str, Union[str, int]] = {"host": str(), "port": int()}
