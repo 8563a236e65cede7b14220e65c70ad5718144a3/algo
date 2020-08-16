@@ -1,9 +1,9 @@
 """
-    A class representing a connection to :mod:`algo.server`
+    Low level client communication with server
     -------------------------------------------------------
 
     Wraps the :mod:`socket` interface for low-level communication
-    with the algo server.
+    with the :mod:`algo.server`.
 """
 import socket
 from typing import Dict, Union
@@ -11,23 +11,34 @@ from typing import Dict, Union
 
 class Connection:
     """
-        Contains a variety of helper functions for communication
-        over socket and error checking
+    Contains a variety of helper functions for communication
+    over socket and error checking
 
-        .. automethod:: __init__
+    .. automethod:: __init__
     """
     def __init__(self, host: str, port: int) -> None:
+        """
+        Assigns connection parameters to instance variables
+        and checks received parameters for errors.
+
+        :param host: the local or remote server's name or ip address
+        :type host: str
+        :param port: the port number to connect to
+        :type port: int
+        :returns: None
+        """
         self.host: str = host
         self.port: int = port
         self.check_valid()
 
     def check_valid(self) -> None:
         """
-            If MyPy or a linter has not been run on a user script, pick up any
-            type errors or value errors
-            from :meth:`Connection.__init__`
-            and raise. Also check if given host and port is a
-            reachable, resolvable address.
+        Pick up any type errors or value errors
+        from :meth:`Connection.__init__`
+        and raise. Also check if given host and port is a
+        reachable, resolvable address.
+
+        :returns: None
         """
         arg_types: Dict[str, Union[str, int]] = {"host": str(), "port": int()}
         host_type_fine: bool = isinstance(self.host, type(arg_types.get("host")))
