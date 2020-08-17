@@ -3,7 +3,7 @@
     -------------------------------------------------------
 
     Wraps the :mod:`socket` interface for low-level communication
-    with the :mod:`algo.server`.
+    with the :mod:`server`.
 """
 import socket
 from typing import Dict, Union

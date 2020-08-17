@@ -3,7 +3,7 @@
     -------------------------------------------------------------
 
     Wraps the :mod:`socket` interface for low-level communication
-    with the :mod:`server`.
+    with the :mod:`client`.
 """
 import socket
 

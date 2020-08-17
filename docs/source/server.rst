@@ -1,6 +1,18 @@
 server package
 ==============
 
+Submodules
+----------
+
+server.clientcon module
+-----------------------
+
+.. automodule:: server.clientcon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 Module contents
 ---------------
 
