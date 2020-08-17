@@ -1,7 +1,9 @@
-algo
-====
+Algo
+======
 
 .. toctree::
    :maxdepth: 4
 
-   algo
+   client
+   server
+   common

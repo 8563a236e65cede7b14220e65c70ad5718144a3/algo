@@ -1,10 +1,10 @@
-algo.server package
-===================
+common package
+==============
 
 Module contents
 ---------------
 
-.. automodule:: algo.server
+.. automodule:: common
    :members:
    :undoc-members:
    :show-inheritance:

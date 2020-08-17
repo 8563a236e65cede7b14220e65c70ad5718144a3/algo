@@ -5,7 +5,7 @@
     Test client connection class and functionality
 """
 import pytest
-from client import connection
+from .context import connection
 
 # ( (host, port), expected )
 check_valid_data = (
