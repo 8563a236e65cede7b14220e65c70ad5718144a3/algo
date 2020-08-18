@@ -51,7 +51,7 @@ class ClientListener:
                 callback = key.data
                 callback(key.fileobj, mask)
 
-    def accept(self, sock: socket.socket) -> None:
+    def accept(self, sock: socket.socket, mask: int) -> None:
         """
         Create an instance of ClientConnection and store for later use
 
@@ -88,7 +88,7 @@ class ClientConnection:
         :rtype: None
         """
         self.socket: socket.socket = sock
-        self.buffer: str = str()
+        self.buffer: bytes = bytes()
         self.id: int = id
 
     def read(self, sock: socket.socket, mask: int) -> None:
@@ -100,4 +100,6 @@ class ClientConnection:
         :type mask: int
         :rtype: None
         """
-        self.buffer += self.sock.recv(1024)
+        self.buffer += self.socket.recv(1024)
+        print(self.buffer)
+        
