@@ -40,10 +40,16 @@ class ClientListener:
         self.selector: selectors.DefaultSelector = selectors.DefaultSelector()
         self.server: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.setblocking(False)
-        self.server.bind(address)
+        self.server.bind((address, port))
         self.server.listen(max_con)
 
         self.selector.register(self.server, selectors.EVENT_READ, self.accept)
+
+        while True:
+            print("waiting for I/O")
+            for key, mask in self.selector.select(timeout=1):
+                callback = key.data
+                callback(key.fileobj, mask)
 
     def accept(self, sock: socket.socket) -> None:
         """
@@ -55,7 +61,7 @@ class ClientListener:
         """
         new_connection: socket.socket
         address: Any
-
+        print("accept")
         (new_connection, address) = sock.accept()
         new_connection.setblocking(False)
         client_con: ClientConnection = ClientConnection(new_connection, self.global_id)
