@@ -42,14 +42,17 @@ class ClientListener:
         self.server.setblocking(False)
         self.server.bind((address, port))
         self.server.listen(max_con)
+        self.keep_going = True
 
         self.selector.register(self.server, selectors.EVENT_READ, self.accept)
 
         while True:
-            print("waiting for I/O")
+            print("waiting IO")
             for key, mask in self.selector.select(timeout=1):
                 callback = key.data
                 callback(key.fileobj, mask)
+            if not self.keep_going:
+                break
 
     def accept(self, sock: socket.socket, mask: int) -> None:
         """
@@ -64,10 +67,20 @@ class ClientListener:
         print("accept")
         (new_connection, address) = sock.accept()
         new_connection.setblocking(False)
-        client_con: ClientConnection = ClientConnection(new_connection, self.global_id)
+        client_con: ClientConnection = ClientConnection(new_connection, self.global_id, self)
         self.global_id += 1
         self.clients.append(client_con)
         self.selector.register(new_connection, selectors.EVENT_READ, client_con.read)
+
+    def close(self) -> None:
+        """
+        Closes the listening socket and unregisters selector
+
+        :rtype: None
+        """
+        self.keep_going = False
+        self.selector.unregister(self.server)
+        self.server.close()
 
 
 class ClientConnection:
@@ -78,7 +91,7 @@ class ClientConnection:
     .. automethod:: __init__
     """
 
-    def __init__(self, sock: socket.socket, id: int) -> None:
+    def __init__(self, sock: socket.socket, id: int, parent: ClientListener) -> None:
         """
 
         :param sock: the client socket returned from :meth:`ClientListener.accept`
@@ -89,6 +102,7 @@ class ClientConnection:
         """
         self.socket: socket.socket = sock
         self.buffer: bytes = bytes()
+        self.parent: ClientListener = parent
         self.id: int = id
 
     def read(self, sock: socket.socket, mask: int) -> None:
@@ -101,5 +115,12 @@ class ClientConnection:
         :rtype: None
         """
         self.buffer += self.socket.recv(1024)
-        print(self.buffer)
-        
+        if len(self.buffer) > 0:
+            print(self.buffer)
+            self.parent.selector.unregister(self.socket)
+            self.socket.close()
+            print("socket closed")
+            self.parent.close()
+            print("listener closed")
+
+
