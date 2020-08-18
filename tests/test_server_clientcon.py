@@ -24,6 +24,10 @@ def test_client_con():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect(("localhost", 10000))
     sock.sendall(b"hello world")
-    sock.close()
 
+    response = sock.recv(1024)
+
+    sock.close()
     server_thread.join()
+
+    assert response == b"closing"

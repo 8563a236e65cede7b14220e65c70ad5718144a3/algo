@@ -42,6 +42,7 @@ class ClientListener:
         self.server.setblocking(False)
         self.server.bind((address, port))
         self.server.listen(max_con)
+        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.keep_going = True
 
         self.selector.register(self.server, selectors.EVENT_READ, self.accept)
@@ -118,6 +119,7 @@ class ClientConnection:
         if len(self.buffer) > 0:
             print(self.buffer)
             self.parent.selector.unregister(self.socket)
+            self.socket.sendall(b"closing")
             self.socket.close()
             print("socket closed")
             self.parent.close()
