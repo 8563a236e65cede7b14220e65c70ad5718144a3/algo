@@ -34,6 +34,7 @@ class ClientListener:
         :rtype: None
         """
         self.clients: List[ClientConnection] = list()
+        self.global_id: int = 0
         self.address: str = address
         self.port: int = port
         self.selector: selectors.DefaultSelector = selectors.DefaultSelector()
@@ -57,7 +58,8 @@ class ClientListener:
 
         (new_connection, address) = sock.accept()
         new_connection.setblocking(False)
-        client_con: ClientConnection = ClientConnection(new_connection)
+        client_con: ClientConnection = ClientConnection(new_connection, self.global_id)
+        self.global_id += 1
         self.clients.append(client_con)
         self.selector.register(new_connection, selectors.EVENT_READ, client_con.read)
 
