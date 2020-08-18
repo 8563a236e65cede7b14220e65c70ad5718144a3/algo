@@ -2,8 +2,8 @@
     Low level communication with clients
     -------------------------------------------------------------
 
-    Wraps the :mod:`socket` interface for low-level communication
-    with the :mod:`client`.
+    Wraps the :mod:`socket` and :mod:`selectors` interface for
+    low-level communication with the :mod:`client`.
 """
 import socket
 import selectors
@@ -14,12 +14,25 @@ class ClientListener:
     """
     The main listener for client connections. Keeps track of all
     client connections and maintains the socket selector for
-    multiplexed I/O
+    multiplexed I/O.
 
     .. automethod:: __init__
     """
 
     def __init__(self, address: str, port: int, max_con: int) -> None:
+        """
+        Sets up a listener on the specified address and port. Limits number
+        of connections to max_con. Creates empty list to store client
+        connections and registers listening socket with selector.
+
+        :param address: the interface to bind to
+        :type address: str
+        :param port: the port to bind to
+        :type port: int
+        :param max_con: maximum number of clients allowed
+        :type max_con: int
+        :rtype: None
+        """
         self.clients: List[ClientConnection] = list()
         self.address: str = address
         self.port: int = port
@@ -34,9 +47,10 @@ class ClientListener:
     def accept(self, sock: socket.socket) -> None:
         """
         Create an instance of ClientConnection and store for later use
+
         :param sock: the socket returned from the listener
-        :type sock: socket.socket
-        :return: None
+        :type sock: :class:`socket.socket`
+        :rtype: None
         """
         new_connection: socket.socket
         address: Any
@@ -47,20 +61,35 @@ class ClientListener:
         self.clients.append(client_con)
         self.selector.register(new_connection, selectors.EVENT_READ, client_con.read)
 
-    def read(self):
-        pass
-
 
 class ClientConnection:
     """
     A class representing a client connection. Handles low-level
     socket communication, receiving requests and sending back data.
+
+    .. automethod:: __init__
     """
 
     def __init__(self, sock: socket.socket, id: int) -> None:
+        """
+
+        :param sock: the client socket returned from :meth:`ClientListener.accept`
+        :type sock: :class:`socket.socket`
+        :param id: the global id for the connection
+        :type id: int
+        :rtype: None
+        """
         self.socket: socket.socket = sock
         self.buffer: str = str()
         self.id: int = id
 
-    def read(self, sock, mask):
+    def read(self, sock: socket.socket, mask: int) -> None:
+        """
+
+        :param sock: the socket that raised the event
+        :type sock: :class:`socket.socket`
+        :param mask: the event mask
+        :type mask: int
+        :rtype: None
+        """
         self.buffer += self.sock.recv(1024)
