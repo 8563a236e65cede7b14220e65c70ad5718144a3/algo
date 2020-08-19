@@ -6,6 +6,7 @@
     with the :mod:`server`.
 """
 import socket
+from common.csproto import unpack_proto, pack_proto, PROTO, proto_size
 from typing import Dict, Union
 
 
@@ -62,9 +63,19 @@ class Connection:
         except socket.gaierror as err:
             raise ValueError("Cannot resolve host address")
 
-        # Check if host and port are reachable
+    def connect(self) -> None:
+        """
+        Attempt a connection, send a heartbeat and wait for response. If
+        no response, raise error
+        :returns: None
+        """
         sock: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        reachable: int = sock.connect_ex((self.host, self.port))
+        sock.connect((self.host, self.port))
+        sock.sendall(pack_proto(PROTO.HEARTBEAT))
+        data: bytes = sock.recv(proto_size)
+        response: int = unpack_proto(data)
+        print("response", response)
 
-        if reachable:
+        if response != PROTO.HEARTBEAT_RESPONSE.value:
             raise ValueError("Host and Port not reachable")
+
